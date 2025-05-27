@@ -68,16 +68,13 @@ jobs:
         uses: actions/download-artifact@v4  # Corrected action
         with:
           name: checkov-report
-          path: reports
+          path: checkov-report.txt
 
       - name: Download TfLint Report
         uses: actions/download-artifact@v4  # Corrected action
         with:
           name: tflint-report
-          path: reports
-
-      - name: List Downloaded Files
-        run: ls -la reports
+          path: tflint-report.txt
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v3
@@ -89,5 +86,5 @@ jobs:
 
       - name: Upload Reports to S3
         run: |
-          aws s3 cp reports/checkov-report.txt s3://${{ secrets.S3_BUCKET }}/checkov-report.txt
-          aws s3 cp reports/tflint-report.txt s3://${{ secrets.S3_BUCKET }}/tflint-report.txt
+          aws s3 cp checkov-report.txt s3://${{ secrets.S3_BUCKET }}/checkov-report.txt
+          aws s3 cp tflint-report.txt s3://${{ secrets.S3_BUCKET }}/tflint-report.txt
