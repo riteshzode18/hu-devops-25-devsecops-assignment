@@ -14,7 +14,6 @@ provider "aws" {
 
 resource "aws_s3_bucket" "secure_bucket" {
   bucket = "secure-s3-bucket-feature2"
-  acl    = "private"
 
   # Enable server-side encryption
   server_side_encryption_configuration {
