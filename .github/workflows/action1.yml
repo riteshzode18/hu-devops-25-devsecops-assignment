@@ -125,7 +125,7 @@ jobs:
           name: trivy-report
           path: trivy-report.txt
 
-   upload-reports-s3:
+  upload-reports-s3:
     runs-on: ubuntu-latest
     needs: [container-security]
     steps:
