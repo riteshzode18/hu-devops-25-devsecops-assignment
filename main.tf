@@ -14,6 +14,44 @@ resource "aws_s3_bucket" "secure_bucket" {
       }
     }
   }
+
+  # Enable versioning
+  versioning {
+    enabled = true
+  }
+
+  # Enable access logging
+  logging {
+    target_bucket = "logging-bucket-name"
+    target_prefix = "log/"
+  }
+
+  # Add lifecycle configuration
+  lifecycle_rule {
+    id      = "lifecycle"
+    enabled = true
+
+    expiration {
+      days = 30
+    }
+
+    noncurrent_version_expiration {
+      days = 15
+    }
+  }
+
+  # Cross-region replication (replace with your actual configuration)
+#   replication_configuration {
+#     role = "arn:aws:iam::account-id:role/replication-role"
+#     rules {
+#       id     = "replication-rule"
+#       status = "Enabled"
+
+#       destination {
+#         bucket = "arn:aws:s3:::replicated-bucket-name"
+#       }
+#     }
+#   }
 }
 
 resource "aws_s3_bucket_public_access_block" "secure_bucket_block" {

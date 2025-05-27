@@ -8,6 +8,10 @@ on:
     branches:
       - feature-2
 
+# permissions:
+#   contents: read
+#   id-token: write
+
 jobs:
   security-checks:
     name: Terraform Security Checks
