@@ -39,6 +39,7 @@ jobs:
       - name: Install TfLint
         run: |
           curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+
       - name: Run TfLint
         run: |
           mkdir -p reports
@@ -57,33 +58,35 @@ jobs:
           name: tflint-report
           path: reports/tflint-report.txt
 
-  # upload-reports-s3:
-  #   name: Upload Reports to S3
-  #   runs-on: ubuntu-latest
-  #   needs: [security-checks]
+  upload-reports-s3:
+    name: Upload Reports to S3
+    runs-on: ubuntu-latest
+    needs: [security-checks]
 
-  #   steps:
-  #     - name: Download Checkov Report
-  #       uses: actions/download-artifact@v4  # Corrected action
-  #       with:
-  #         name: checkov-report
-  #         path: reports
+    steps:
+      - name: Download Checkov Report
+        uses: actions/download-artifact@v4
+        with:
+          name: checkov-report
+          path: reports
 
-  #     - name: Download TfLint Report
-  #       uses: actions/download-artifact@v4  # Corrected action
-  #       with:
-  #         name: tflint-report
-  #         path: reports
+      - name: Download TfLint Report
+        uses: actions/download-artifact@v4
+        with:
+          name: tflint-report
+          path: reports
 
-  #     - name: Configure AWS Credentials
-  #       uses: aws-actions/configure-aws-credentials@v3
-  #       with:
-  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         aws-region: ${{ secrets.AWS_REGION }}
-  #         aws-session-token: ${{ secrets.TOKEN }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-  #     - name: Upload Reports to S3
-  #       run: |
-  #         aws s3 cp reports/checkov-report.txt s3://${{ secrets.S3_BUCKET }}/checkov-report.txt
-  #         aws s3 cp reports/tflint-report.txt s3://${{ secrets.S3_BUCKET }}/tflint-report.txt
+      - name: List Downloaded Files
+        run: ls -la reports
+
+      - name: Upload Reports to S3
+        run: |
+          aws s3 cp reports/checkov-report.txt s3://${{ secrets.S3_BUCKET }}/checkov-report.txt
+          aws s3 cp reports/tflint-report.txt s3://${{ secrets.S3_BUCKET }}/tflint-report.txt
