@@ -8,9 +8,10 @@ on:
     branches:
       - feature-2
 
-# permissions:
-#   contents: read
-#   id-token: write
+# Restrict permissions to only what's required
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
   security-checks:
@@ -29,10 +30,10 @@ jobs:
       - name: Install Checkov
         run: pip install checkov
 
-      # - name: Run Checkov
-      #   run: |
-      #     mkdir -p reports
-      #     checkov -d . --output-file-path reports/checkov-report.txt
+      - name: Run Checkov
+        run: |
+          mkdir -p reports
+          checkov -d . --output-file-path reports/checkov-report.txt
 
       - name: Install TfLint
         run: |
@@ -43,11 +44,11 @@ jobs:
           mkdir -p reports
           tflint > reports/tflint-report.txt || true
 
-      # - name: Upload Checkov Report
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: checkov-report
-      #     path: reports/checkov-report.txt
+      - name: Upload Checkov Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: checkov-report
+          path: reports/checkov-report.txt
 
       - name: Upload TfLint Report
         uses: actions/upload-artifact@v4
