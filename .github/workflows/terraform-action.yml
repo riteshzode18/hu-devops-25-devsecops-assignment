@@ -39,7 +39,6 @@ jobs:
       - name: Install TfLint
         run: |
           curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
-
       - name: Run TfLint
         run: |
           mkdir -p reports
@@ -50,13 +49,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: checkov-report
-          path: checkov-report.txt 
+          path: reports/checkov-report.txt
 
       - name: Upload TfLint Report
         uses: actions/upload-artifact@v4
         with:
           name: tflint-report
-          path: tflint-report.txt
+          path: reports/tflint-report.txt
 
   upload-reports-s3:
     name: Upload Reports to S3
@@ -68,13 +67,13 @@ jobs:
         uses: actions/download-artifact@v4  # Corrected action
         with:
           name: checkov-report
-          path: checkov-report.txt
+          path: reports
 
       - name: Download TfLint Report
         uses: actions/download-artifact@v4  # Corrected action
         with:
           name: tflint-report
-          path: tflint-report.txt
+          path: reports
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v3
@@ -86,5 +85,5 @@ jobs:
 
       - name: Upload Reports to S3
         run: |
-          aws s3 cp checkov-report.txt s3://${{ secrets.S3_BUCKET }}/checkov-report.txt
-          aws s3 cp tflint-report.txt s3://${{ secrets.S3_BUCKET }}/tflint-report.txt
+          aws s3 cp reports/checkov-report.txt s3://${{ secrets.S3_BUCKET }}/checkov-report.txt
+          aws s3 cp reports/tflint-report.txt s3://${{ secrets.S3_BUCKET }}/tflint-report.txt
