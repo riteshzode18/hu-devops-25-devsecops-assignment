@@ -43,7 +43,7 @@ jobs:
       - name: Run TfLint
         run: |
           mkdir -p reports
-          tflint --format=default > reports/tflint-report.txt 2>&1 || true
+          tflint > reports/tflint-report.txt 2>&1 || true
         continue-on-error: true
 
       - name: Upload Checkov Report
