@@ -92,7 +92,7 @@ jobs:
   container-security:
     name: Container security scan
     runs-on: ubuntu-latest
-    needs: build
+    needs: sonarqube
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -130,10 +130,11 @@ jobs:
     needs: [container-security]
     steps:
       - name: Download Trivy Report
-        uses: actions/download-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: trivy-report
-          path: reports
+          path: trivy-report.txt
+  
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
