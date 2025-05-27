@@ -1,0 +1,52 @@
+name: Security Checks
+
+on:
+  push:
+    branches:
+      - feature-2
+  pull_request:
+    branches:
+      - feature-2
+
+jobs:
+  security-checks:
+    name: Terraform Security Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install Checkov
+        run: pip install checkov
+
+      - name: Run Checkov
+        run: |
+          mkdir -p reports
+          checkov -d . --output-file-path reports/checkov-report.txt
+
+      - name: Install TfLint
+        run: |
+          curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+
+      - name: Run TfLint
+        run: |
+          mkdir -p reports
+          tflint > reports/tflint-report.txt || true
+
+      - name: Upload Checkov Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: checkov-report
+          path: reports/checkov-report.txt
+
+      - name: Upload TfLint Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: tflint-report
+          path: reports/tflint-report.txt
