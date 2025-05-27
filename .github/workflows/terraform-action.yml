@@ -43,8 +43,8 @@ jobs:
       - name: Run TfLint
         run: |
           mkdir -p reports
-          tflint > reports/tflint-report.txt || true
-        # continue-on-error: true
+          tflint --format=default > reports/tflint-report.txt 2>&1 || true
+        continue-on-error: true
 
       - name: Upload Checkov Report
         uses: actions/upload-artifact@v4
