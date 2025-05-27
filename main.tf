@@ -1,3 +1,13 @@
+terraform {
+  required_version = ">= 1.3.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
 provider "aws" {
   region = "us-east-1"
 }
@@ -19,6 +29,21 @@ resource "aws_s3_bucket" "secure_bucket" {
   versioning {
     enabled = true
   }
+
+  # Add lifecycle configuration
+  lifecycle_rule {
+    id      = "lifecycle"
+    enabled = true
+
+    expiration {
+      days = 30
+    }
+
+    noncurrent_version_expiration {
+      days = 15
+    }
+  }
+
 }
 
 resource "aws_s3_bucket_public_access_block" "secure_bucket_block" {
@@ -28,3 +53,4 @@ resource "aws_s3_bucket_public_access_block" "secure_bucket_block" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
